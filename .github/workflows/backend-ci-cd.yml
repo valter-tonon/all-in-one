@@ -32,7 +32,13 @@ jobs:
         ini-file: production
     
     - name: Create necessary directories
-      run: mkdir -p bootstrap/cache
+      run: |
+        mkdir -p bootstrap/cache
+        mkdir -p storage/framework/views
+        mkdir -p storage/framework/cache
+        mkdir -p storage/framework/sessions
+        chmod -R 775 storage
+        chmod -R 775 bootstrap/cache
       
     - name: Copy .env
       run: cp .env.example .env
