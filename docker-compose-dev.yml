@@ -1,0 +1,81 @@
+version: '3'
+
+services:
+  # Backend services
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    container_name: crm-erp-app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+    ports:
+      - "5173:5173"
+    networks:
+      - crm-erp-network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: crm-erp-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-landlord}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - crm-erp-mysql:/var/lib/mysql
+    networks:
+      - crm-erp-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-root}"]
+      retries: 3
+      timeout: 5s
+
+  nginx:
+    image: nginx:alpine
+    container_name: crm-erp-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - crm-erp-network
+    depends_on:
+      - app
+
+  # Frontend development service
+  frontend:
+    build:
+      context: ../tenant-frontend-repo
+      dockerfile: Dockerfile
+    container_name: crm-erp-frontend-dev
+    restart: unless-stopped
+    volumes:
+      - ../tenant-frontend-repo:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost/api
+    networks:
+      - crm-erp-network
+    depends_on:
+      - app
+      - nginx
+
+networks:
+  crm-erp-network:
+    driver: bridge
+
+volumes:
+  crm-erp-mysql:
+    driver: local 

@@ -303,6 +303,162 @@ crm-erp/
 - `GET /api/stocks/low-stock` - Listar itens com estoque baixo
 - `GET /api/stocks/out-of-stock` - Listar itens sem estoque
 
+## Estrutura de repositórios
+
+Este projeto foi dividido em dois repositórios separados:
+
+1. Repositório Backend (este repositório): Contém o código do backend Laravel e API.
+2. [Repositório Frontend](https://github.com/seu-usuario/tenant-frontend): Contém o código do frontend React.
+
+### CI/CD
+
+#### Backend
+Este repositório utiliza GitHub Actions para automatizar o processo de CI/CD:
+- Testes automatizados são executados a cada push ou pull request para a branch main
+- O deploy automático para a VM Oracle é realizado via SSH quando os testes passam
+
+Para configurar o deploy, é necessário adicionar os seguintes secrets ao repositório GitHub:
+- `SSH_PRIVATE_KEY`: Chave SSH privada para acessar a VM Oracle
+- `VM_HOST`: Endereço IP ou hostname da VM Oracle
+- `SSH_USER`: Usuário SSH para acesso à VM Oracle
+
+#### Frontend
+O repositório frontend possui seu próprio pipeline de CI/CD que:
+- Executa linting e testes
+- Faz o build do aplicativo
+- Realiza o deploy para o ambiente de produção (via GitHub Pages ou outro serviço configurado)
+
+## Desenvolvimento local
+
+### Ambiente de Desenvolvimento Combinado
+
+Para executar tanto o backend quanto o frontend em um ambiente de desenvolvimento local único usando Docker, siga estas etapas:
+
+1. Clone ambos os repositórios na mesma pasta pai:
+   ```bash
+   # Clone o repositório backend
+   git clone https://github.com/seu-usuario/backend-repo.git AllInOne
+   
+   # Clone o repositório frontend
+   git clone https://github.com/seu-usuario/frontend-repo.git tenant-frontend-repo
+   ```
+
+2. Inicie o ambiente de desenvolvimento combinado:
+   ```bash
+   cd AllInOne
+   ./dev-start.sh
+   ```
+
+3. Para parar o ambiente de desenvolvimento:
+   ```bash
+   ./dev-stop.sh
+   ```
+
+O ambiente de desenvolvimento combinado disponibiliza:
+- Backend: http://localhost
+- Frontend: http://localhost:3000
+
+### Backend
+
 ## Licença
 
-Este projeto está licenciado sob a licença MIT. 
+Este projeto está licenciado sob a licença MIT.
+
+## Frontend CRM-ERP Tenant
+
+Este repositório contém o código frontend do sistema CRM-ERP para tenants. Foi separado do backend para facilitar o desenvolvimento e permitir um deploy independente.
+
+## Tecnologias
+
+- React
+- TypeScript
+- Tailwind CSS
+- Vite
+- Docker
+
+## Ambientes de Execução
+
+### 1. Executando Isoladamente
+
+Você pode executar este frontend de forma isolada, sem o backend:
+
+```bash
+# Instalação de dependências
+npm install
+
+# Execução em ambiente de desenvolvimento
+npm start
+```
+
+Ou usando Docker:
+
+```bash
+# Ambiente de desenvolvimento
+docker-compose up tenant-frontend-dev
+
+# Ambiente de produção
+docker-compose up tenant-frontend
+```
+
+### 2. Integrado com o Backend
+
+Para um ambiente de desenvolvimento completo, este frontend pode ser executado em conjunto com o backend.
+
+1. Certifique-se de ter ambos os repositórios clonados na mesma pasta pai:
+
+```bash
+# Clone o repositório backend (se ainda não tiver)
+git clone https://github.com/seu-usuario/backend-repo.git AllInOne
+
+# Clone o repositório frontend (se já não estiver nele)
+git clone https://github.com/seu-usuario/frontend-repo.git tenant-frontend-repo
+```
+
+2. Inicie o ambiente de desenvolvimento integrado a partir do diretório do backend:
+
+```bash
+cd ../AllInOne
+./dev-start.sh
+```
+
+Isso irá iniciar todos os serviços necessários, incluindo o frontend e o backend.
+
+## CI/CD
+
+Este repositório utiliza GitHub Actions para automatizar o processo de CI/CD:
+
+- Testes são executados a cada push ou pull request para a branch main/master
+- O build e deploy são realizados automaticamente quando os testes passam
+- O deploy é feito para GitHub Pages (ou outro serviço configurado)
+
+## Estrutura do Projeto
+
+```
+tenant-frontend/
+├── src/
+│   ├── components/ (Layout.tsx, etc.)
+│   ├── pages/ (Dashboard.tsx, Clientes.tsx, etc.)
+│   ├── services/ (API integração)
+│   └── App.tsx
+├── public/
+├── .github/workflows/ (CI/CD)
+├── Dockerfile
+└── docker-compose.yml
+```
+
+## Desenvolvimento
+
+Para começar a desenvolver neste projeto:
+
+1. Clone o repositório
+2. Instale as dependências: `npm install`
+3. Inicie o servidor de desenvolvimento: `npm start`
+
+O frontend estará disponível em `http://localhost:3000` (ou a porta configurada).
+
+## Comandos Disponíveis
+
+- `npm start` - Inicia o servidor de desenvolvimento
+- `npm run build` - Cria a versão de produção
+- `npm test` - Executa os testes
+- `npm run lint` - Executa o linter 
