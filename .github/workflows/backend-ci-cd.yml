@@ -75,6 +75,15 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Debug secrets
+      run: |
+        echo "VM_HOST está definido: ${{ secrets.VM_HOST != '' }}"
+        echo "SSH_USER está definido: ${{ secrets.SSH_USER != '' }}"
+        echo "SSH_PRIVATE_KEY está definido: ${{ secrets.SSH_PRIVATE_KEY != '' }}"
+    
     - name: Deploy to production
       uses: appleboy/ssh-action@master
       with:
