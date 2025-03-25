@@ -12,7 +12,8 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <link rel="stylesheet" href="{{ asset('build/assets/app-BrjpGFl-.css') }}">
+        <script src="{{ asset('build/assets/app-DjOeAsgC.js') }}" defer></script>
     </head>
     <body class="antialiased bg-gradient-to-br from-gray-900 to-gray-800 text-white">
         <!-- Navbar -->

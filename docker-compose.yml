@@ -5,17 +5,24 @@ services:
     build:
       context: ./docker/app
       dockerfile: Dockerfile
+      args:
+        user: ${USER:-valter}
+        uid: ${UID:-1000}
     container_name: crm-erp-app
     restart: unless-stopped
     working_dir: /var/www
     volumes:
       - ./:/var/www
+      - ./public:/var/www/public
     ports:
       - "5173:5173"
     networks:
       - crm-erp-network
     depends_on:
       - db
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
 
   db:
     image: mysql:8.0
@@ -49,36 +56,39 @@ services:
     depends_on:
       - app
 
+  # Comentando os serviços que não possuem Dockerfiles
   # Ambiente de produção
-  tenant-frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.prod
-    container_name: tenant-frontend
-    restart: unless-stopped
-    ports:
-      - "3000:80"
-    networks:
-      - tenant-frontend-network
+  # tenant-frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.prod
+  #   container_name: tenant-frontend
+  #   restart: unless-stopped
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - tenant-frontend-network
+  #     - crm-erp-network
 
   # Ambiente de desenvolvimento
-  tenant-frontend-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: tenant-frontend-dev
-    restart: unless-stopped
-    volumes:
-      - ./:/app
-      - /app/node_modules
-    ports:
-      - "3001:3000"
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost/api
-    networks:
-      - tenant-frontend-network
+  # tenant-frontend-dev:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: tenant-frontend-dev
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+  #   ports:
+  #     - "3001:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #     - CHOKIDAR_USEPOLLING=true
+  #     - REACT_APP_API_URL=http://localhost/api
+  #   networks:
+  #     - tenant-frontend-network
+  #     - crm-erp-network
 
 networks:
   crm-erp-network:
