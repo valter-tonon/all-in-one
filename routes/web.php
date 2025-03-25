@@ -8,6 +8,7 @@ use App\Livewire\Tenant\Stock\StockList;
 use App\Livewire\Tenant\Stock\StockCreate;
 use App\Livewire\Tenant\Stock\StockEdit;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TenantRegistrationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -69,5 +70,9 @@ Route::prefix('tenant')->middleware(['auth'])->group(function () {
     Route::get('/stock/create', StockCreate::class)->name('tenant.stock.create');
     Route::get('/stock/{id}/edit', StockEdit::class)->name('tenant.stock.edit');
 });
+
+// Rotas para registro de tenant
+Route::get('/tenant/register', [TenantRegistrationController::class, 'showRegistrationForm'])->name('tenant.register.form');
+Route::post('/tenant/register', [TenantRegistrationController::class, 'register'])->name('tenant.register');
 
 require __DIR__.'/auth.php';

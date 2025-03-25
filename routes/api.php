@@ -104,7 +104,7 @@ Route::prefix('tenants')->group(function () {
 });
 
 // Rotas de Estoque (Tenant)
-Route::middleware('tenant')->prefix('stocks')->group(function () {
+Route::prefix('stocks')->group(function () {
     Route::get('/', [StockController::class, 'index']);
     Route::get('/search', [StockController::class, 'search']);
     Route::get('/low-stock', [StockController::class, 'lowStock']);

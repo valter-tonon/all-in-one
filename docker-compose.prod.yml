@@ -1,0 +1,174 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile
+    container_name: crm-erp-app-prod
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./storage:/var/www/storage
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - db
+      - redis
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+
+  db:
+    image: mysql:8.0
+    container_name: crm-erp-db-prod
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-landlord}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      SERVICE_TAGS: prod
+      SERVICE_NAME: mysql
+    volumes:
+      - crm-erp-mysql-prod:/var/lib/mysql
+    networks:
+      - crm-erp-network-prod
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD:-root}"]
+      retries: 3
+      timeout: 5s
+
+  nginx:
+    image: nginx:alpine
+    container_name: crm-erp-nginx-prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/ssl:/etc/nginx/ssl
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - app
+
+  redis:
+    image: redis:alpine
+    container_name: crm-erp-redis-prod
+    restart: always
+    volumes:
+      - crm-erp-redis-prod:/data
+    networks:
+      - crm-erp-network-prod
+    command: redis-server --appendonly yes
+
+  tenant-frontend:
+    build:
+      context: ./tenant-frontend
+      dockerfile: Dockerfile.prod
+    container_name: crm-erp-tenant-frontend-prod
+    restart: always
+    ports:
+      - "3000:80"
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - app
+
+  # Serviços de Monitoramento
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: crm-erp-prometheus-prod
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - crm-erp-network-prod
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: crm-erp-grafana-prod
+    restart: always
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - prometheus
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    container_name: crm-erp-nginx-exporter-prod
+    restart: always
+    command:
+      - --nginx.scrape-uri=http://nginx/nginx_status
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - nginx
+
+  mysql-exporter:
+    image: prom/mysqld-exporter:latest
+    container_name: crm-erp-mysql-exporter-prod
+    restart: always
+    environment:
+      - DATA_SOURCE_NAME=root:${DB_PASSWORD:-root}@db:3306/
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - db
+
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: crm-erp-redis-exporter-prod
+    restart: always
+    command:
+      - --redis.addr=redis://redis:6379
+    networks:
+      - crm-erp-network-prod
+    depends_on:
+      - redis
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: crm-erp-node-exporter-prod
+    restart: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - crm-erp-network-prod
+
+networks:
+  crm-erp-network-prod:
+    driver: bridge
+
+volumes:
+  crm-erp-mysql-prod:
+    driver: local
+  crm-erp-redis-prod:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local 

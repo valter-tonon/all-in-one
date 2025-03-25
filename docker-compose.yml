@@ -10,6 +10,8 @@ services:
     working_dir: /var/www
     volumes:
       - ./:/var/www
+    ports:
+      - "5173:5173"
     networks:
       - crm-erp-network
     depends_on:
@@ -47,38 +49,41 @@ services:
     depends_on:
       - app
 
+  # Ambiente de produção
   tenant-frontend:
     build:
-      context: ./tenant-frontend
-      dockerfile: Dockerfile
-    container_name: crm-erp-tenant-frontend
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: tenant-frontend
     restart: unless-stopped
     ports:
       - "3000:80"
     networks:
-      - crm-erp-network
-    depends_on:
-      - app
+      - tenant-frontend-network
 
+  # Ambiente de desenvolvimento
   tenant-frontend-dev:
-    image: node:16-alpine
-    container_name: crm-erp-tenant-frontend-dev
-    working_dir: /app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tenant-frontend-dev
+    restart: unless-stopped
     volumes:
-      - ./tenant-frontend:/app
+      - ./:/app
+      - /app/node_modules
     ports:
       - "3001:3000"
-    command: sh -c "npm install && npm start"
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost/api
     networks:
-      - crm-erp-network
-    depends_on:
-      - app
+      - tenant-frontend-network
 
 networks:
   crm-erp-network:
+    driver: bridge
+  tenant-frontend-network:
     driver: bridge
 
 volumes:

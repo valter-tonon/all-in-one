@@ -11,6 +11,7 @@ use App\Infrastructure\Repositories\EloquentPlanRepository;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Configurar o Vite para usar o host correto
+        if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+            URL::forceScheme('http');
+            URL::forceRootUrl("http://{$_SERVER['HTTP_X_FORWARDED_HOST']}");
+        }
+        
         // Compartilhar configurações do site com todas as views
         $this->loadSiteSettings();
     }

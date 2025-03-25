@@ -44,7 +44,9 @@ class StockServiceTest extends TestCase
     public function test_can_find_stock_by_id(): void
     {
         // Arrange
-        $stock = new Stock(['id' => 1, 'name' => 'Camisa', 'quantity' => 10, 'price' => 50.00]);
+        $stock = Mockery::mock(Stock::class);
+        $stock->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $stock->shouldReceive('getAttribute')->with('name')->andReturn('Camisa');
 
         $repository = Mockery::mock(StockRepositoryInterface::class);
         $repository->shouldReceive('findById')->with(1)->once()->andReturn($stock);
@@ -85,16 +87,11 @@ class StockServiceTest extends TestCase
             category: 'Vestuário'
         );
 
-        $stock = new Stock([
-            'id' => 1,
-            'name' => 'Camisa',
-            'quantity' => 10,
-            'price' => 50.00,
-            'description' => 'Camisa de algodão',
-            'sku' => 'VES-CAMIS-ABCDE',
-            'category' => 'Vestuário',
-            'status' => 'active'
-        ]);
+        $stock = Mockery::mock(Stock::class);
+        $stock->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $stock->shouldReceive('getAttribute')->with('name')->andReturn('Camisa');
+        $stock->shouldReceive('getAttribute')->with('quantity')->andReturn(10);
+        $stock->shouldReceive('getAttribute')->with('price')->andReturn(50.00);
 
         $repository = Mockery::mock(StockRepositoryInterface::class);
         $repository->shouldReceive('create')->once()->andReturn($stock);
@@ -114,27 +111,14 @@ class StockServiceTest extends TestCase
     public function test_can_update_stock(): void
     {
         // Arrange
-        $stock = new Stock([
-            'id' => 1,
-            'name' => 'Camisa',
-            'quantity' => 10,
-            'price' => 50.00,
-            'description' => 'Camisa de algodão',
-            'sku' => 'VES-CAMIS-ABCDE',
-            'category' => 'Vestuário',
-            'status' => 'active'
-        ]);
+        $stock = Mockery::mock(Stock::class);
+        $stock->shouldReceive('getAttribute')->with('sku')->andReturn('VES-CAMIS-ABCDE');
 
-        $updatedStock = new Stock([
-            'id' => 1,
-            'name' => 'Camisa Polo',
-            'quantity' => 15,
-            'price' => 60.00,
-            'description' => 'Camisa polo de algodão',
-            'sku' => 'VES-CAMIS-ABCDE',
-            'category' => 'Vestuário',
-            'status' => 'active'
-        ]);
+        $updatedStock = Mockery::mock(Stock::class);
+        $updatedStock->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $updatedStock->shouldReceive('getAttribute')->with('name')->andReturn('Camisa Polo');
+        $updatedStock->shouldReceive('getAttribute')->with('quantity')->andReturn(15);
+        $updatedStock->shouldReceive('getAttribute')->with('price')->andReturn(60.00);
 
         $dto = new StockDTO(
             name: 'Camisa Polo',
@@ -164,12 +148,7 @@ class StockServiceTest extends TestCase
     public function test_can_delete_stock(): void
     {
         // Arrange
-        $stock = new Stock([
-            'id' => 1,
-            'name' => 'Camisa',
-            'quantity' => 10,
-            'price' => 50.00
-        ]);
+        $stock = new Stock(['id' => 1, 'name' => 'Camisa', 'quantity' => 10, 'price' => 50.00]);
 
         $repository = Mockery::mock(StockRepositoryInterface::class);
         $repository->shouldReceive('findById')->with(1)->once()->andReturn($stock);

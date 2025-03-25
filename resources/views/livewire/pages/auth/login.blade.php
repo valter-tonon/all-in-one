@@ -26,7 +26,7 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600 py-12 px-4 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8 bg-white p-12 rounded-xl shadow-2xl">
         <div class="text-center">
             <h2 class="mt-2 text-4xl font-extrabold text-gray-800">
@@ -85,6 +85,13 @@ new #[Layout('layouts.guest')] class extends Component
                 <button type="submit" class="w-full flex justify-center py-4 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out">
                     Entrar
                 </button>
+            </div>
+            
+            <div class="text-center mt-4">
+                <span class="text-base text-gray-600">Não tem uma conta?</span>
+                <a href="{{ route('register') }}" wire:navigate class="ml-1 font-medium text-blue-600 hover:text-blue-500">
+                    Registre-se
+                </a>
             </div>
         </form>
     </div>

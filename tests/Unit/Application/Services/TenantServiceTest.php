@@ -46,7 +46,9 @@ class TenantServiceTest extends TestCase
     public function test_can_find_tenant_by_id(): void
     {
         // Arrange
-        $tenant = new Tenant(['id' => 1, 'name' => 'Empresa A', 'database' => 'tenant_empresa_a']);
+        $tenant = Mockery::mock(Tenant::class);
+        $tenant->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $tenant->shouldReceive('getAttribute')->with('name')->andReturn('Empresa A');
 
         $repository = Mockery::mock(TenantRepositoryInterface::class);
         $repository->shouldReceive('findById')->with(1)->once()->andReturn($tenant);
@@ -87,14 +89,10 @@ class TenantServiceTest extends TestCase
             status: 'active'
         );
 
-        $tenant = new Tenant([
-            'id' => 1,
-            'name' => 'Empresa A',
-            'database' => 'tenant_empresa_a_12345',
-            'domain' => 'empresa-a.example.com',
-            'plan' => 'premium',
-            'status' => 'active'
-        ]);
+        $tenant = Mockery::mock(Tenant::class);
+        $tenant->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $tenant->shouldReceive('getAttribute')->with('name')->andReturn('Empresa A');
+        $tenant->shouldReceive('getAttribute')->with('plan')->andReturn('premium');
 
         $repository = Mockery::mock(TenantRepositoryInterface::class);
         $repository->shouldReceive('create')->once()->andReturn($tenant);
@@ -116,23 +114,12 @@ class TenantServiceTest extends TestCase
     public function test_can_update_tenant(): void
     {
         // Arrange
-        $tenant = new Tenant([
-            'id' => 1,
-            'name' => 'Empresa A',
-            'database' => 'tenant_empresa_a',
-            'domain' => 'empresa-a.example.com',
-            'plan' => 'basic',
-            'status' => 'active'
-        ]);
+        $tenant = Mockery::mock(Tenant::class);
 
-        $updatedTenant = new Tenant([
-            'id' => 1,
-            'name' => 'Empresa A Atualizada',
-            'database' => 'tenant_empresa_a',
-            'domain' => 'empresa-a-nova.example.com',
-            'plan' => 'premium',
-            'status' => 'active'
-        ]);
+        $updatedTenant = Mockery::mock(Tenant::class);
+        $updatedTenant->shouldReceive('getAttribute')->with('id')->andReturn(1);
+        $updatedTenant->shouldReceive('getAttribute')->with('name')->andReturn('Empresa A Atualizada');
+        $updatedTenant->shouldReceive('getAttribute')->with('plan')->andReturn('premium');
 
         $dto = new TenantDTO(
             name: 'Empresa A Atualizada',

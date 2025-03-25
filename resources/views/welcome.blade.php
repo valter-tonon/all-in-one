@@ -35,7 +35,7 @@
                             @else
                                 <a href="{{ route('login') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Entrar</a>
                                 @if (Route::has('register'))
-                                    <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium">Registrar</a>
+                                    <a href="{{ route('tenant.register.form') }}?plan=professional" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium">Registrar</a>
                                 @endif
                             @endauth
                         </div>
@@ -61,7 +61,7 @@
                     @else
                         <a href="{{ route('login') }}" class="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Entrar</a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white block px-3 py-2 rounded-md text-base font-medium">Registrar</a>
+                            <a href="{{ route('tenant.register.form') }}?plan=professional" class="bg-red-600 hover:bg-red-700 text-white block px-3 py-2 rounded-md text-base font-medium">Registrar</a>
                         @endif
                     @endauth
                 </div>
@@ -89,7 +89,7 @@
                                         Acessar Dashboard
                                     </a>
                                 @else
-                                    <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105">
+                                    <a href="{{ route('tenant.register.form') }}?plan=professional" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105">
                                         Começar Agora
                                     </a>
                                     <a href="{{ route('login') }}" class="ml-4 text-white border border-white hover:bg-white hover:text-gray-900 font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300">
@@ -202,7 +202,7 @@
                                 <li>Suporte por email</li>
                             </ul>
                             <div class="mt-8">
-                                <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
+                                <a href="{{ route('tenant.register.form') }}?plan=basic" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
                                     Começar Agora
                                 </a>
                             </div>
@@ -226,7 +226,7 @@
                                 <li>Suporte prioritário</li>
                             </ul>
                             <div class="mt-8">
-                                <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
+                                <a href="{{ route('tenant.register.form') }}?plan=professional" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
                                     Começar Agora
                                 </a>
                             </div>
@@ -249,7 +249,7 @@
                                 <li>Suporte 24/7</li>
                             </ul>
                             <div class="mt-8">
-                                <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
+                                <a href="{{ route('tenant.register.form') }}?plan=enterprise" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-lg transition-all duration-300">
                                     Começar Agora
                                 </a>
                             </div>
@@ -274,7 +274,7 @@
                                     Acessar Dashboard
                                 </a>
                             @else
-                                <a href="{{ route('register') }}" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105">
+                                <a href="{{ route('tenant.register.form') }}?plan=professional" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105">
                                     Começar Agora
                                 </a>
                             @endauth

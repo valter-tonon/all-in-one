@@ -10,7 +10,7 @@
 
     <div class="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-3">
         <!-- Card Relatório de Inquilinos -->
-        <a href="{{ route('reports.tenants') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-50">
+        <a href="{{ route('admin.reports.tenants') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-50">
             <div class="flex items-center">
                 <div class="p-3 mr-4 bg-blue-500 rounded-full text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +25,7 @@
         </a>
 
         <!-- Card Relatório de Receita -->
-        <a href="{{ route('reports.revenue') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-50">
+        <a href="{{ route('admin.reports.revenue') }}" class="block p-6 bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-50">
             <div class="flex items-center">
                 <div class="p-3 mr-4 bg-green-500 rounded-full text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

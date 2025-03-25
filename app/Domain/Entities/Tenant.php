@@ -40,4 +40,12 @@ class Tenant extends Model
     {
         return TenantFactory::new();
     }
+
+    /**
+     * Magic method to access attributes as object properties
+     */
+    public function __get($key)
+    {
+        return $this->getAttribute($key);
+    }
 } 
