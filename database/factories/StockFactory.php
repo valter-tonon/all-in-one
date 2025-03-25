@@ -20,7 +20,7 @@ class StockFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->productName ?? $this->faker->words(3, true);
+        $name = $this->faker->words(3, true);
         $category = $this->faker->randomElement(['Vestuário', 'Eletrônicos', 'Alimentos', 'Móveis', 'Livros']);
         $prefix = strtoupper(substr($category, 0, 3));
         $namePart = strtoupper(substr(Str::slug($name), 0, 5));
