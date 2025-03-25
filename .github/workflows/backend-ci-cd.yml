@@ -60,6 +60,25 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.1'
+        extensions: mbstring, dom, fileinfo, mysql, gd
+        coverage: xdebug
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install Node dependencies
+      run: npm ci
+        
+    - name: Build assets
+      run: npm run build
+    
     - name: Setup SSH Key
       uses: webfactory/ssh-agent@v0.7.0
       with:
