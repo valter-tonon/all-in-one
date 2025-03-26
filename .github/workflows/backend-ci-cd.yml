@@ -78,21 +78,24 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     
-    - name: Deploy to production
-      uses: appleboy/ssh-action@master
+    - name: Configurar SSH
+      uses: webfactory/ssh-agent@v0.7.0
       with:
-        host: "158.180.17.161"
-        username: "ubuntu"
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: 22
-        script: |
-          cd ~/projects/all-in-one
-          git pull origin main
-          composer install --no-interaction --prefer-dist --optimize-autoloader
-          php artisan migrate --force
-          php artisan config:cache
-          php artisan route:cache
-          php artisan view:cache
-          # Se necessário, reiniciar serviços
-          sudo systemctl restart nginx
-          sudo systemctl restart php8.2-fpm 
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Adicionar chave do servidor ao known_hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -H 158.180.17.161 >> ~/.ssh/known_hosts
+    
+    - name: Deploy para produção
+      run: |
+        ssh ubuntu@158.180.17.161 'cd ~/projects/all-in-one && \
+        git pull origin main && \
+        composer install --no-interaction --prefer-dist --optimize-autoloader && \
+        php artisan migrate --force && \
+        php artisan config:cache && \
+        php artisan route:cache && \
+        php artisan view:cache && \
+        sudo systemctl restart nginx && \
+        sudo systemctl restart php8.2-fpm' 
