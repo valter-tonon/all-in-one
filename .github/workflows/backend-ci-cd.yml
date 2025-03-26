@@ -78,16 +78,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
     
-    - name: Debug secrets
-      run: |
-        echo "VM_HOST está definido: 158.180.17.161
-        echo "SSH_USER está definido: "ubuntu"
-        echo "SSH_PRIVATE_KEY está definido: ${{ secrets.SSH_PRIVATE_KEY != '' }}"
-    
     - name: Deploy to production
       uses: appleboy/ssh-action@master
       with:
-        host: 158.180.17.161
+        host: "158.180.17.161"
         username: "ubuntu"
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
